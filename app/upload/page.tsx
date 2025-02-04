@@ -26,6 +26,40 @@ export default function Upload() {
     }
   };
 
+  const onSubmit = async (event: React.ChangeEvent<SubmitEvent>) => {
+    event.preventDefault();
+
+    setIsUploadng(true);
+
+    try {
+      // upsert video to your database here!
+      // try to use an api route to handle this in the backend using a POST request in app/api/upload.tsx
+
+      // here I am creating a FormData object to wrap all the file content together (this is necessary for videos to my knowledge)
+      const formData = new FormData();
+      formData.append("video", file)
+      formData.append("caption", caption)
+
+      // note in the api route you need to do something like the below to get the FormData:
+      // const formData = await req.formData();
+      // const file = formData.get("file");
+      // const caption = formData.get("caption");
+
+      // here I am sending the FormData to a POST api endpoint. Here's a good resource:
+      // https://www.youtube.com/watch?v=ZusDefqyMrg&ab_channel=ToshVelaga
+
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      })
+
+    } catch {
+      setError({ message: "Failed to upload video" });
+    }
+
+    setIsUploadng(false);
+  }
+
   return (
     <>
       <UploadLayout>
